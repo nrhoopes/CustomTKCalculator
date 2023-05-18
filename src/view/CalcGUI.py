@@ -30,6 +30,26 @@ class CalcGUI:
     def setController(self, controller):
         self.controller = controller
 
+    # Private method __shortcut
+    # Arguments:
+    #   - event: A <KeyPress> event
+    #
+    # __shortcut will evaluate every keypress from the user and will decide if
+    # the button the user presses is allowed.  If it is, it will either add the
+    # key to the operation box or will perform the special function. Otherwise,
+    # nothing will happen.
+    def __shortcut(self, event):
+        if event.char.isnumeric() or event.char in ["/", "*", "-", "+", "."]:
+            self.opBox.configure(state="normal")
+            self.opBox.insert(len(self.opBox.get()), event.char)
+            self.opBox.configure(state="disabled")
+        elif event.keysym == "BackSpace":
+            self.opBox.configure(state="normal")
+            self.opBox.delete(len(self.opBox.get()) - 1, len(self.opBox.get()))
+            self.opBox.configure(state="disabled")
+        elif event.keysym == "Enter":
+            print("accepted operation: " + event.keysym)
+
     # Public method basicCalc
     #
     # Populates the main window with widget for a basic calculator
@@ -38,8 +58,10 @@ class CalcGUI:
         self.fontSize = 35
 
         # Creation of the operation box at the top of the window.
-        self.opBox = ctk.CTkEntry(self.mainFrame, height=75, width=350, justify="right", font=("TkDefaultFont", self.fontSize))
+        self.opBox = ctk.CTkEntry(self.mainFrame, height=75, width=350, justify="right", font=("TkDefaultFont", self.fontSize), state="disabled")
         self.opBox.grid(column=0, row=0, columnspan=4, pady=5)
+
+        self.root.bind("<KeyPress>", self.__shortcut)
 
         # Creation of the operation buttons along the top and side of keypad
         self.subButton = ctk.CTkButton(self.mainFrame, text="-", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
