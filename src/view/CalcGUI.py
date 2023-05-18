@@ -48,6 +48,11 @@ class CalcGUI:
         self.opBox.delete(0, len(self.opBox.get()))
         self.opBox.configure(state="disabled")
 
+    def removeLast(self):
+        self.opBox.configure(state="normal")
+        self.opBox.delete(len(self.opBox.get()) - 1, len(self.opBox.get()))
+        self.opBox.configure(state="disabled")
+
     # Private method __shortcut
     # Arguments:
     #   - event: A <KeyPress> event
@@ -60,9 +65,7 @@ class CalcGUI:
         if event.char.isnumeric() or event.char in ["/", "*", "-", "+", "."]:
             self.insertToOpBox(event.char)
         elif event.keysym == "BackSpace":
-            self.opBox.configure(state="normal")
-            self.opBox.delete(len(self.opBox.get()) - 1, len(self.opBox.get()))
-            self.opBox.configure(state="disabled")
+            self.removeLast()
         elif event.keysym == "Return" or event.keysym == "KP_Enter":
             print("accepted operation: " + event.keysym)
 
@@ -94,7 +97,7 @@ class CalcGUI:
         self.clearButton = ctk.CTkButton(self.mainFrame, text="CE", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=self.clearScreen)
         self.clearButton.grid(column=0, row=1, pady=5)
         
-        self.backButton = ctk.CTkButton(self.mainFrame, text="<-", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
+        self.backButton = ctk.CTkButton(self.mainFrame, text="<-", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=self.removeLast)
         self.backButton.grid(column=1, row=1, pady=5)
 
         self.divideButton = ctk.CTkButton(self.mainFrame, text="/", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("/"))
