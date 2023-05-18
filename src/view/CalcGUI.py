@@ -30,6 +30,24 @@ class CalcGUI:
     def setController(self, controller):
         self.controller = controller
 
+    # Public method insertToOpBox
+    # Arguments:
+    #   - string: a string to be inserted into the operation box
+    #
+    # Unlocks the operation box for editing, places string in, and closes the box again.
+    def insertToOpBox(self, string):
+        self.opBox.configure(state="normal")
+        self.opBox.insert(len(self.opBox.get()), string)
+        self.opBox.configure(state="disabled")
+
+    # Public method clearScreen
+    #
+    # Used to clear the screen of the calculator.
+    def clearScreen(self):
+        self.opBox.configure(state="normal")
+        self.opBox.delete(0, len(self.opBox.get()))
+        self.opBox.configure(state="disabled")
+
     # Private method __shortcut
     # Arguments:
     #   - event: A <KeyPress> event
@@ -40,19 +58,28 @@ class CalcGUI:
     # nothing will happen.
     def __shortcut(self, event):
         if event.char.isnumeric() or event.char in ["/", "*", "-", "+", "."]:
-            self.opBox.configure(state="normal")
-            self.opBox.insert(len(self.opBox.get()), event.char)
-            self.opBox.configure(state="disabled")
+            self.insertToOpBox(event.char)
         elif event.keysym == "BackSpace":
             self.opBox.configure(state="normal")
             self.opBox.delete(len(self.opBox.get()) - 1, len(self.opBox.get()))
             self.opBox.configure(state="disabled")
-        elif event.keysym == "Enter":
+        elif event.keysym == "Return" or event.keysym == "KP_Enter":
             print("accepted operation: " + event.keysym)
 
     # Public method basicCalc
     #
     # Populates the main window with widget for a basic calculator
+    # Currently the basic calculator grid looks like this:
+    #
+    #     0  1  2  3
+    #   --------------
+    # 0 | [ screen ] |
+    # 1 | ce <  /  * |
+    # 2 | 7  8  9  - |
+    # 3 | 4  5  6  + |
+    # 4 | 1  2  3  = |
+    # 5 |    0       |
+    #   --------------
     def basicCalc(self):
         self.buttonWidth = 75
         self.fontSize = 35
@@ -64,51 +91,54 @@ class CalcGUI:
         self.root.bind("<KeyPress>", self.__shortcut)
 
         # Creation of the operation buttons along the top and side of keypad
-        self.subButton = ctk.CTkButton(self.mainFrame, text="-", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
-        self.subButton.grid(column=3, row=1, pady=5)
+        self.clearButton = ctk.CTkButton(self.mainFrame, text="CE", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=self.clearScreen)
+        self.clearButton.grid(column=0, row=1, pady=5)
+        
+        self.backButton = ctk.CTkButton(self.mainFrame, text="<-", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
+        self.backButton.grid(column=1, row=1, pady=5)
 
-        self.multButton = ctk.CTkButton(self.mainFrame, text="*", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
-        self.multButton.grid(column=2, row=1, pady=5)
+        self.divideButton = ctk.CTkButton(self.mainFrame, text="/", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("/"))
+        self.divideButton.grid(column=2, row=1, pady=5)
 
-        self.divideButton = ctk.CTkButton(self.mainFrame, text="/", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
-        self.divideButton.grid(column=1, row=1, pady=5)
+        self.multButton = ctk.CTkButton(self.mainFrame, text="*", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("*"))
+        self.multButton.grid(column=3, row=1, pady=5)
 
-        self.addButton = ctk.CTkButton(self.mainFrame, text="+", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
-        self.addButton.grid(column=3, row=2, rowspan=2, pady=5, sticky="ns")
+        self.subButton = ctk.CTkButton(self.mainFrame, text="-", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("-"))
+        self.subButton.grid(column=3, row=2, pady=5)
+
+        self.addButton = ctk.CTkButton(self.mainFrame, text="+", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("+"))
+        self.addButton.grid(column=3, row=3, pady=5, sticky="ns")
 
         self.equalButton = ctk.CTkButton(self.mainFrame, text="=", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
         self.equalButton.grid(column=3, row=4, rowspan=2, pady=5, sticky="ns")
 
-        self.clearButton = ctk.CTkButton(self.mainFrame, text="CE", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
-        self.clearButton.grid(column=0, row=1, pady=5)
-
         # Creation of the number buttons on the keypad 0-9
-        self.sevenButton = ctk.CTkButton(self.mainFrame, text="7", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
+        self.sevenButton = ctk.CTkButton(self.mainFrame, text="7", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("7"))
         self.sevenButton.grid(column=0, row=2, pady=5)
 
-        self.eightButton = ctk.CTkButton(self.mainFrame, text="8", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
+        self.eightButton = ctk.CTkButton(self.mainFrame, text="8", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("8"))
         self.eightButton.grid(column=1, row=2, pady=5)
 
-        self.nineButton = ctk.CTkButton(self.mainFrame, text="9", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
+        self.nineButton = ctk.CTkButton(self.mainFrame, text="9", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("9"))
         self.nineButton.grid(column=2, row=2, pady=5)
 
-        self.fourButton = ctk.CTkButton(self.mainFrame, text="4", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
+        self.fourButton = ctk.CTkButton(self.mainFrame, text="4", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("4"))
         self.fourButton.grid(column=0, row=3, pady=5)
 
-        self.fiveButton = ctk.CTkButton(self.mainFrame, text="5", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
+        self.fiveButton = ctk.CTkButton(self.mainFrame, text="5", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("5"))
         self.fiveButton.grid(column=1, row=3, pady=5)
 
-        self.sixButton = ctk.CTkButton(self.mainFrame, text="6", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
+        self.sixButton = ctk.CTkButton(self.mainFrame, text="6", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("6"))
         self.sixButton.grid(column=2, row=3, pady=5)
 
-        self.oneButton = ctk.CTkButton(self.mainFrame, text="1", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
+        self.oneButton = ctk.CTkButton(self.mainFrame, text="1", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("1"))
         self.oneButton.grid(column=0, row=4, pady=5)
 
-        self.twoButton = ctk.CTkButton(self.mainFrame, text="2", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
+        self.twoButton = ctk.CTkButton(self.mainFrame, text="2", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("2"))
         self.twoButton.grid(column=1, row=4, pady=5)
 
-        self.threeButton = ctk.CTkButton(self.mainFrame, text="3", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
+        self.threeButton = ctk.CTkButton(self.mainFrame, text="3", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("3"))
         self.threeButton.grid(column=2, row=4, pady=5)
 
-        self.zeroButton = ctk.CTkButton(self.mainFrame, text="0", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
+        self.zeroButton = ctk.CTkButton(self.mainFrame, text="0", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("0"))
         self.zeroButton.grid(column=1, row=5, pady=5)
