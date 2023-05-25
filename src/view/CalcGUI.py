@@ -48,6 +48,10 @@ class CalcGUI:
         self.opBox.delete(0, len(self.opBox.get()))
         self.opBox.configure(state="disabled")
 
+    # Public method removeLast
+    #
+    # Used to remove the most recent digit or character typed into the operation box.
+    # Essentially a backspace button.
     def removeLast(self):
         self.opBox.configure(state="normal")
         self.opBox.delete(len(self.opBox.get()) - 1, len(self.opBox.get()))
@@ -77,11 +81,11 @@ class CalcGUI:
     #     0  1  2  3
     #   --------------
     # 0 | [ screen ] |
-    # 1 | ce <  /  * |
-    # 2 | 7  8  9  - |
-    # 3 | 4  5  6  + |
-    # 4 | 1  2  3  = |
-    # 5 |    0       |
+    # 1 | ce %  <  / |
+    # 2 | 7  8  9  * |
+    # 3 | 4  5  6  - |
+    # 4 | 1  2  3  + |
+    # 5 |    0  .  = |
     #   --------------
     def basicCalc(self):
         self.buttonWidth = 75
