@@ -48,6 +48,9 @@ class CalcGUI:
         self.opBox.delete(0, len(self.opBox.get()))
         self.opBox.configure(state="disabled")
 
+    def convertPercent(self):
+        pass
+
     def removeLast(self):
         self.opBox.configure(state="normal")
         self.opBox.delete(len(self.opBox.get()) - 1, len(self.opBox.get()))
@@ -96,24 +99,27 @@ class CalcGUI:
         # Creation of the operation buttons along the top and side of keypad
         self.clearButton = ctk.CTkButton(self.mainFrame, text="CE", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=self.clearScreen)
         self.clearButton.grid(column=0, row=1, pady=5)
+
+        self.percentButton = ctk.CTkButton(self.mainFrame, text="%", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=self.convertPercent)
+        self.percentButton.grid(column=1, row=1, pady=5)
         
         self.backButton = ctk.CTkButton(self.mainFrame, text="<-", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=self.removeLast)
-        self.backButton.grid(column=1, row=1, pady=5)
+        self.backButton.grid(column=2, row=1, pady=5)
 
         self.divideButton = ctk.CTkButton(self.mainFrame, text="/", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("/"))
-        self.divideButton.grid(column=2, row=1, pady=5)
+        self.divideButton.grid(column=3, row=1, pady=5)
 
         self.multButton = ctk.CTkButton(self.mainFrame, text="*", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("*"))
-        self.multButton.grid(column=3, row=1, pady=5)
+        self.multButton.grid(column=3, row=2, pady=5)
 
         self.subButton = ctk.CTkButton(self.mainFrame, text="-", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("-"))
-        self.subButton.grid(column=3, row=2, pady=5)
+        self.subButton.grid(column=3, row=3, pady=5)
 
         self.addButton = ctk.CTkButton(self.mainFrame, text="+", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("+"))
-        self.addButton.grid(column=3, row=3, pady=5, sticky="ns")
+        self.addButton.grid(column=3, row=4, pady=5, sticky="ns")
 
         self.equalButton = ctk.CTkButton(self.mainFrame, text="=", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
-        self.equalButton.grid(column=3, row=4, rowspan=2, pady=5, sticky="ns")
+        self.equalButton.grid(column=3, row=5, pady=5, sticky="ns")
 
         # Creation of the number buttons on the keypad 0-9
         self.sevenButton = ctk.CTkButton(self.mainFrame, text="7", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("7"))
@@ -146,5 +152,6 @@ class CalcGUI:
         self.zeroButton = ctk.CTkButton(self.mainFrame, text="0", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("0"))
         self.zeroButton.grid(column=1, row=5, pady=5)
 
+        # Creation of the decimal button
         self.decimalButton = ctk.CTkButton(self.mainFrame, text=".", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("."))
         self.decimalButton.grid(column=2, row=5, pady=5)
