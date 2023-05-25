@@ -48,9 +48,6 @@ class CalcGUI:
         self.opBox.delete(0, len(self.opBox.get()))
         self.opBox.configure(state="disabled")
 
-    def convertPercent(self):
-        pass
-
     def removeLast(self):
         self.opBox.configure(state="normal")
         self.opBox.delete(len(self.opBox.get()) - 1, len(self.opBox.get()))
@@ -100,7 +97,7 @@ class CalcGUI:
         self.clearButton = ctk.CTkButton(self.mainFrame, text="CE", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=self.clearScreen)
         self.clearButton.grid(column=0, row=1, pady=5)
 
-        self.percentButton = ctk.CTkButton(self.mainFrame, text="%", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=self.convertPercent)
+        self.percentButton = ctk.CTkButton(self.mainFrame, text="%", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.controller.convertPercent(self.opBox.get()))
         self.percentButton.grid(column=1, row=1, pady=5)
         
         self.backButton = ctk.CTkButton(self.mainFrame, text="<-", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=self.removeLast)
