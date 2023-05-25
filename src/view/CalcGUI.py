@@ -145,3 +145,6 @@ class CalcGUI:
 
         self.zeroButton = ctk.CTkButton(self.mainFrame, text="0", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("0"))
         self.zeroButton.grid(column=1, row=5, pady=5)
+
+        self.decimalButton = ctk.CTkButton(self.mainFrame, text=".", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("."))
+        self.decimalButton.grid(column=2, row=5, pady=5)
