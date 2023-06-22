@@ -13,3 +13,7 @@ class calcController:
         self.ui.clearScreen()
         self.ui.insertToOpBox(float(number)/100)
 
+    def evaluate(self, expression):
+        evaluation = str(eval(expression))
+        self.ui.displayToOpBox(evaluation)
+

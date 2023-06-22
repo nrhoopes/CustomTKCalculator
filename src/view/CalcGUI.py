@@ -40,6 +40,16 @@ class CalcGUI:
         self.opBox.insert(len(self.opBox.get()), string)
         self.opBox.configure(state="disabled")
 
+    # Public method displayToOpBox
+    # Arguments:
+    #   - string: a string to be displayed into the operation box
+    #
+    # As opposed to inserting to the end of the operation box, displayToOpBox will
+    # instead clear the screen and then insert the given string onto the screen.
+    def displayToOpBox(self, string):
+        self.clearScreen()
+        self.insertToOpBox(string)
+
     # Public method clearScreen
     #
     # Used to clear the screen of the calculator.
@@ -71,7 +81,7 @@ class CalcGUI:
         elif event.keysym == "BackSpace":
             self.removeLast()
         elif event.keysym == "Return" or event.keysym == "KP_Enter":
-            print("accepted operation: " + event.keysym)
+            self.controller.evaluate(self.opBox.get())
 
     # Public method basicCalc
     #
@@ -119,7 +129,7 @@ class CalcGUI:
         self.addButton = ctk.CTkButton(self.mainFrame, text="+", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("+"))
         self.addButton.grid(column=3, row=4, pady=5, sticky="ns")
 
-        self.equalButton = ctk.CTkButton(self.mainFrame, text="=", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize))
+        self.equalButton = ctk.CTkButton(self.mainFrame, text="=", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.controller.evaluate(self.opBox.get()))
         self.equalButton.grid(column=3, row=5, pady=5, sticky="ns")
 
         # Creation of the number buttons on the keypad 0-9
