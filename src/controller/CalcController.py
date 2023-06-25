@@ -27,6 +27,32 @@ class calcController:
     #
     # Will evaluate the expression, cast it to a string, and then tell the opBox to display that string.
     def evaluate(self, expression):
-        evaluation = str(eval(expression))
-        self.ui.displayToOpBox(evaluation)
+        # print(self.isFullExpression(expression))
+        if self.isFullExpression(expression):
+            evaluation = str(eval(expression))
+            self.ui.displayToOpBox(evaluation)
+
+    
+    def isFullExpression(self, expression):
+        operatorCount = 0
+        operandCount = 0
+        currentOperand = False
+        operators = ["+", "-", "/", "*"]
+        for i in expression:
+            if i in operators:
+                operatorCount += 1
+                if currentOperand:
+                    operandCount += 1
+                    currentOperand = False
+                pass
+            elif i.isnumeric() or i == ".":
+                currentOperand = True
+                pass
+        if currentOperand:
+            operandCount += 1
+
+        if (operatorCount + 1) == operandCount:
+            return True
+        else:
+            return False
 
