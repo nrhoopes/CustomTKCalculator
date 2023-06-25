@@ -32,12 +32,21 @@ class calcController:
             evaluation = str(eval(expression))
             self.ui.displayToOpBox(evaluation)
 
-    
+    # Public method isFullExpression
+    # Arguments:
+    #   - expression: An expression string to see if a full expression is present.
+    #
+    # isFullExpression will return True or False depending on if the passed in expression is an
+    # actual and valid expression.  A valid expression is one that is defined as having two
+    # operands per operator.
     def isFullExpression(self, expression):
         operatorCount = 0
         operandCount = 0
         currentOperand = False
+        
+        # List of possible operators the calculator supports
         operators = ["+", "-", "/", "*"]
+
         for i in expression:
             if i in operators:
                 operatorCount += 1
@@ -48,6 +57,8 @@ class calcController:
             elif i.isnumeric() or i == ".":
                 currentOperand = True
                 pass
+        # Fence post - There won't be another operator to count the last operand, so
+        # double check if we need to add another to the operandCount.
         if currentOperand:
             operandCount += 1
 
