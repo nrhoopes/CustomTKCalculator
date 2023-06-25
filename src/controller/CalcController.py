@@ -17,8 +17,9 @@ class calcController:
                 number = number[0:len(number)-1]
             else:
                 break
-        self.ui.clearScreen()
-        self.ui.insertToOpBox(number + str(float(percentDec)/100))
+        if percentDec != "":
+            self.ui.clearScreen()
+            self.ui.insertToOpBox(number + str(float(percentDec)/100))
 
     # Public method evaluate
     # Arguments:
