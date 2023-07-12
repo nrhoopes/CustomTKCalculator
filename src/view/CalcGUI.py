@@ -76,6 +76,16 @@ class CalcGUI:
         self.opBox.delete(len(self.opBox.get()) - 1, len(self.opBox.get()))
         self.opBox.configure(state="disabled")
 
+    # Private method __clearFrame
+    # Arguments:
+    #   - frame: The given frame that needs to be cleared.
+    # 
+    # Clear every widget from the frame passed in.
+    # Window will remain open, assure you fill with something afterwards.
+    def __clearFrame(self, frame):
+        for widgets in frame.winfo_children():
+            widgets.destroy()
+
     # Private method __shortcut
     # Arguments:
     #   - event: A <KeyPress> event
@@ -109,6 +119,8 @@ class CalcGUI:
     def basicCalc(self):
         self.buttonWidth = 75
         self.fontSize = 35
+
+        self.__clearFrame(self.mainFrame)
 
         # Creation of the operation box at the top of the window.
         self.opBox = ctk.CTkEntry(self.mainFrame, height=75, width=350, justify="right", font=("TkDefaultFont", self.fontSize), state="disabled")
