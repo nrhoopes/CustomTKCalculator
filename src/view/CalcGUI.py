@@ -19,11 +19,12 @@ class CalcGUI:
         self.calculatorsMenu.add_command(label="Scientific Calculator", command=lambda: self.sciCalc())
 
         self.menubar.add_cascade(label="Switch Calculator", menu=self.calculatorsMenu)
+        self.root.configure(menu=self.menubar)
 
         # Creation of the mainFrame that all widgets will be placed in
         self.mainFrame = ctk.CTkFrame(self.root)
         self.basicCalc() # Calculator will always start in basic mode
-        self.mainFrame.pack(padx=5, pady=5)
+        self.mainFrame.pack()
 
     # Public method launch
     # 
@@ -189,4 +190,4 @@ class CalcGUI:
         self.decimalButton.grid(column=2, row=5, pady=5)
 
     def sciCalc(self):
-        pass
+        self.__clearFrame(self.mainFrame)
