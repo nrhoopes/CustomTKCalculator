@@ -11,10 +11,20 @@ class CalcGUI:
         self.root.geometry("450x400")
         self.root.title("Calculator")
 
+        # # # Menu Creation # # #
+        self.menubar = tk.Menu(self.root)
+        self.calculatorsMenu = tk.Menu(self.menubar, tearoff=0)
+
+        self.calculatorsMenu.add_command(label="Basic Calculator", command=lambda: self.basicCalc())
+        self.calculatorsMenu.add_command(label="Scientific Calculator", command=lambda: self.sciCalc())
+
+        self.menubar.add_cascade(label="Switch Calculator", menu=self.calculatorsMenu)
+        self.root.configure(menu=self.menubar)
+
         # Creation of the mainFrame that all widgets will be placed in
         self.mainFrame = ctk.CTkFrame(self.root)
         self.basicCalc() # Calculator will always start in basic mode
-        self.mainFrame.pack(padx=5, pady=5)
+        self.mainFrame.pack()
 
     # Public method launch
     # 
@@ -67,6 +77,16 @@ class CalcGUI:
         self.opBox.delete(len(self.opBox.get()) - 1, len(self.opBox.get()))
         self.opBox.configure(state="disabled")
 
+    # Private method __clearFrame
+    # Arguments:
+    #   - frame: The given frame that needs to be cleared.
+    # 
+    # Clear every widget from the frame passed in.
+    # Window will remain open, assure you fill with something afterwards.
+    def __clearFrame(self, frame):
+        for widgets in frame.winfo_children():
+            widgets.destroy()
+
     # Private method __shortcut
     # Arguments:
     #   - event: A <KeyPress> event
@@ -100,6 +120,8 @@ class CalcGUI:
     def basicCalc(self):
         self.buttonWidth = 75
         self.fontSize = 35
+
+        self.__clearFrame(self.mainFrame)
 
         # Creation of the operation box at the top of the window.
         self.opBox = ctk.CTkEntry(self.mainFrame, height=75, width=350, justify="right", font=("TkDefaultFont", self.fontSize), state="disabled")
@@ -166,3 +188,6 @@ class CalcGUI:
         # Creation of the decimal button
         self.decimalButton = ctk.CTkButton(self.mainFrame, text=".", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("."))
         self.decimalButton.grid(column=2, row=5, pady=5)
+
+    def sciCalc(self):
+        self.__clearFrame(self.mainFrame)
