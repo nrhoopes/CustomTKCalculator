@@ -11,6 +11,15 @@ class CalcGUI:
         self.root.geometry("450x400")
         self.root.title("Calculator")
 
+        # # # Menu Creation # # #
+        self.menubar = tk.Menu(self.root)
+        self.calculatorsMenu = tk.Menu(self.menubar, tearoff=0)
+
+        self.calculatorsMenu.add_command(label="Basic Calculator", command=lambda: self.basicCalc())
+        self.calculatorsMenu.add_command(label="Scientific Calculator", command=lambda: self.sciCalc())
+
+        self.menubar.add_cascade(label="Switch Calculator", menu=self.calculatorsMenu)
+
         # Creation of the mainFrame that all widgets will be placed in
         self.mainFrame = ctk.CTkFrame(self.root)
         self.basicCalc() # Calculator will always start in basic mode
@@ -166,3 +175,6 @@ class CalcGUI:
         # Creation of the decimal button
         self.decimalButton = ctk.CTkButton(self.mainFrame, text=".", width=self.buttonWidth, font=("TkDefaultFont", self.fontSize), command=lambda: self.insertToOpBox("."))
         self.decimalButton.grid(column=2, row=5, pady=5)
+
+    def sciCalc(self):
+        pass
