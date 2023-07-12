@@ -8,7 +8,6 @@ class CalcGUI:
     def __init__(self):
         # Definition of the root window, size, and title
         self.root = ctk.CTk()
-        self.root.geometry("450x400")
         self.root.title("Calculator")
 
         self.buttonWidth = 75
@@ -123,6 +122,7 @@ class CalcGUI:
     # 5 |    0  .  = |
     #   --------------
     def basicCalc(self):
+        self.root.geometry("450x400")
         self.__clearFrame(self.mainFrame)
 
         # Creation of the operation box at the top of the window.
