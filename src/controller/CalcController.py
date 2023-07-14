@@ -2,6 +2,7 @@
 class calcController:
     def __init__(self, ui):
         self.ui = ui
+        self.calcMode = None
 
     # Public method convertPercent
     # Arguments:
@@ -31,6 +32,20 @@ class calcController:
         if self.isFullExpression(expression):
             evaluation = str(eval(expression))
             self.ui.displayToOpBox(evaluation)
+        
+    def sciCalcInsert(self, op):
+        currentOperand = self.ui.opBox.get()
+        currentMem = self.ui.memEntry.get()
+
+        self.ui.memEntry.configure(state="normal")
+        self.ui.memEntry.insert(len(currentMem), currentOperand + op)
+        self.ui.memEntry.configure(state="disabled")
+
+        self.ui.opBox.configure(state="normal")
+        self.ui.opBox.delete(0, len(self.ui.opBox.get()))
+        self.ui.opBox.configure(state="disabled")
+
+        self.ui.clearButton.configure(text="C")
 
     # Public method isFullExpression
     # Arguments:

@@ -26,14 +26,14 @@ class CalcGUI:
 
         # Creation of the mainFrame that all widgets will be placed in
         self.mainFrame = ctk.CTkFrame(self.root)
-        # self.basicCalc() # Calculator will always start in basic mode
-        self.sciCalc() # REMOVE
         self.mainFrame.pack()
 
     # Public method launch
     # 
     # Used to launch the actual GUI after setup is completed.
     def launch(self):
+        # self.basicCalc() # Calculator will always start in basic mode
+        self.sciCalc() # REMOVE
         self.root.mainloop() # launch program
 
     # Public method setController
@@ -71,6 +71,15 @@ class CalcGUI:
         self.opBox.configure(state="normal")
         self.opBox.delete(0, len(self.opBox.get()))
         self.opBox.configure(state="disabled")
+        if self.clearButton.cget('text') == "CE":
+            self.opBox.configure(state="normal")
+            self.opBox.delete(0, len(self.opBox.get()))
+            self.opBox.configure(state="disabled")
+
+            self.memEntry.configure(state="normal")
+            self.memEntry.delete(0, tk.END)
+            self.memEntry.configure(state="disabled")
+        self.clearButton.configure(text="CE")
 
     # Public method removeLast
     #
@@ -105,7 +114,10 @@ class CalcGUI:
         elif event.keysym == "BackSpace":
             self.removeLast()
         elif event.keysym == "Return" or event.keysym == "KP_Enter":
-            self.controller.evaluate(self.opBox.get())
+            if self.controller.calcMode == "basic":
+                self.controller.evaluate(self.opBox.get())
+            elif self.controller.calcMode == "sci":
+                self.controller.evaluate(self.memEntry.get())
 
     # Public method basicCalc
     #
@@ -122,6 +134,7 @@ class CalcGUI:
     # 5 |    0  .  = |
     #   --------------
     def basicCalc(self):
+        self.controller.calcMode = "basic"
         self.root.geometry("450x400")
         self.__clearFrame(self.mainFrame)
 
@@ -198,9 +211,18 @@ class CalcGUI:
         self.__clearFrame(self.mainFrame)
         self.root.geometry("550x620")
 
+        self.controller.calcMode = "sci"
+
+        self.screenFrame = ctk.CTkFrame(self.mainFrame)
+
+        self.memEntry = ctk.CTkEntry(self.screenFrame, state="disabled", justify='right')
+        self.memEntry.grid(column=2, row=0, columnspan=3, sticky="esw")
+
         # Creation of the operation box at the top of the window.
-        self.opBox = ctk.CTkEntry(self.mainFrame, height=75, width=500, justify="right", font=(self.font, self.fontSize), state="disabled")
-        self.opBox.grid(column=0, row=0, columnspan=5, pady=5)
+        self.opBox = ctk.CTkEntry(self.screenFrame, height=75, width=500, justify="right", font=(self.font, self.fontSize), state="disabled")
+        self.opBox.grid(column=0, row=1, columnspan=5)
+
+        self.screenFrame.grid(column=0, row=0, columnspan=5)
 
         self.root.bind("<KeyPress>", self.__shortcut) # REMOVE
 
@@ -232,19 +254,19 @@ class CalcGUI:
         self.backButton = ctk.CTkButton(self.mainFrame, text="<-", width=self.buttonWidth, font=(self.font, self.fontSize), command=self.removeLast)
         self.backButton.grid(column=4, row=1, pady=5)
 
-        self.divideButton = ctk.CTkButton(self.mainFrame, text="/", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("/"))
+        self.divideButton = ctk.CTkButton(self.mainFrame, text="/", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert("/"))
         self.divideButton.grid(column=4, row=3, pady=5)
 
-        self.multButton = ctk.CTkButton(self.mainFrame, text="*", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("*"))
+        self.multButton = ctk.CTkButton(self.mainFrame, text="*", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert("*"))
         self.multButton.grid(column=4, row=4, pady=5)
 
-        self.subButton = ctk.CTkButton(self.mainFrame, text="-", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("-"))
+        self.subButton = ctk.CTkButton(self.mainFrame, text="-", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert("-"))
         self.subButton.grid(column=4, row=5, pady=5)
 
-        self.addButton = ctk.CTkButton(self.mainFrame, text="+", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("+"))
+        self.addButton = ctk.CTkButton(self.mainFrame, text="+", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert("+"))
         self.addButton.grid(column=4, row=6, pady=5, sticky="ns")
 
-        self.equalButton = ctk.CTkButton(self.mainFrame, text="=", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.evaluate(self.opBox.get()))
+        self.equalButton = ctk.CTkButton(self.mainFrame, text="=", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.evaluate(self.memEntry.get()))
         self.equalButton.grid(column=4, row=7, pady=5, sticky="ns")
 
         # Creation of the number buttons on the keypad 0-9
