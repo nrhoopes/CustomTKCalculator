@@ -191,6 +191,9 @@ class CalcGUI:
         self.decimalButton = ctk.CTkButton(self.mainFrame, text=".", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("."))
         self.decimalButton.grid(column=2, row=5, pady=5)
 
+    # Public method sciCalc
+    #
+    # Populates the main window with widgets for the scientific calculator
     def sciCalc(self):
         self.__clearFrame(self.mainFrame)
         self.root.geometry("550x620")
