@@ -49,10 +49,7 @@ class calcController:
         currentOperand = self.ui.opBox.get()
         currentMem = self.ui.memEntry.get()
 
-        print(self.calcMode)
-        print(self.answerInBox)
         if self.answerInBox:
-            print("Test")
             self.ui.memEntry.configure(state="normal")
             self.ui.memEntry.delete(0, len(self.ui.memEntry.get()))
             self.ui.memEntry.configure(state="disabled")
