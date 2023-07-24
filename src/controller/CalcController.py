@@ -34,6 +34,14 @@ class calcController:
             evaluation = str(eval(expression))
             self.ui.displayToOpBox(evaluation)
 
+    # Public method sciEvaluate
+    # Arguments:
+    #   - mem: The current memory saved in the scientific calculator's memEntry
+    #   - op: The current value in the opBox
+    #
+    # Allows for the program to build the full equation and then evalute it as all
+    # the information will not be in the same box in the scientific calculator.
+    # Still utilizes evaluate().  Will also keep the memEntry up to date
     def sciEvaluate(self, mem, op):
         self.evaluate(mem + op)
         currentMem = self.ui.memEntry.get()
@@ -44,6 +52,14 @@ class calcController:
 
         self.answerInBox = True
 
+    # Public method sciCalcInsert
+    # Arguments:
+    #   - op: The operation to insert into the memEntry
+    #
+    # Used instead of insertIntoOpBox as you need to also insert the equation into
+    # the memEntry and clear the opBox.  This is used primarily for operations (+, *, etc..)
+    # It will take whatever is currently in the memEntry and add on the operator and the operand
+    # in the memEntry and clear the opBox.
     def sciCalcInsert(self, op):
         currentOperand = self.ui.opBox.get()
         currentMem = self.ui.memEntry.get()
@@ -54,7 +70,7 @@ class calcController:
             self.ui.memEntry.configure(state="disabled")
             currentMem = ""
 
-        self.answerInBox = False
+        self.answerInBox = False # If answerInBox was True, it is now False because the answer has been edited.
 
         self.ui.memEntry.configure(state="normal")
         self.ui.memEntry.insert(len(currentMem), currentOperand + op)
@@ -66,6 +82,12 @@ class calcController:
 
         self.ui.clearButton.configure(text="C")
 
+    # Public method factorial
+    # Arguments:
+    #   - num: The number to perform a factorial operation on
+    #
+    # Will take whatever num is passed in, perform a factorial operation on it, and
+    # then will erase anything in the opBox and place the answer in.
     def factorial(self, num):
         ans = num * (num - 1)
         for i in range(num - 2, 1, -1):
