@@ -81,6 +81,7 @@ class CalcGUI:
                 self.memEntry.delete(0, tk.END)
                 self.memEntry.configure(state="disabled")
         self.clearButton.configure(text="CE")
+        self.controller.answerInBox = False
 
     # Public method removeLast
     #
@@ -90,6 +91,7 @@ class CalcGUI:
         self.opBox.configure(state="normal")
         self.opBox.delete(len(self.opBox.get()) - 1, len(self.opBox.get()))
         self.opBox.configure(state="disabled")
+        self.controller.answerInBox = False
 
     # Private method __clearFrame
     # Arguments:

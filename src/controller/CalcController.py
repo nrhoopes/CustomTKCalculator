@@ -3,6 +3,7 @@ class calcController:
     def __init__(self, ui):
         self.ui = ui
         self.calcMode = None
+        self.answerInBox = False
 
     # Public method convertPercent
     # Arguments:
@@ -41,10 +42,23 @@ class calcController:
         self.ui.memEntry.insert(len(currentMem), op)
         self.ui.memEntry.configure(state="disabled")
 
+        self.answerInBox = True
+
 
     def sciCalcInsert(self, op):
         currentOperand = self.ui.opBox.get()
         currentMem = self.ui.memEntry.get()
+
+        print(self.calcMode)
+        print(self.answerInBox)
+        if self.answerInBox:
+            print("Test")
+            self.ui.memEntry.configure(state="normal")
+            self.ui.memEntry.delete(0, len(self.ui.memEntry.get()))
+            self.ui.memEntry.configure(state="disabled")
+            currentMem = ""
+
+        self.answerInBox = False
 
         self.ui.memEntry.configure(state="normal")
         self.ui.memEntry.insert(len(currentMem), currentOperand + op)
