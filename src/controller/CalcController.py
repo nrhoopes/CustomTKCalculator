@@ -44,7 +44,6 @@ class calcController:
 
         self.answerInBox = True
 
-
     def sciCalcInsert(self, op):
         currentOperand = self.ui.opBox.get()
         currentMem = self.ui.memEntry.get()
@@ -66,6 +65,14 @@ class calcController:
         self.ui.opBox.configure(state="disabled")
 
         self.ui.clearButton.configure(text="C")
+
+    def factorial(self, num):
+        ans = num * (num - 1)
+        for i in range(num - 2, 1, -1):
+            ans = ans * i
+        self.ui.clearScreen()
+        self.ui.insertToOpBox(ans)
+            
 
     # Public method isFullExpression
     # Arguments:

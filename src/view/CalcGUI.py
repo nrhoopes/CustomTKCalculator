@@ -249,10 +249,10 @@ class CalcGUI:
         self.absButton = ctk.CTkButton(self.mainFrame, text="|x|", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("abs()"))
         self.absButton.grid(column=1, row=2, pady=5)
         
-        self.modButton = ctk.CTkButton(self.mainFrame, text="mod", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox(" % "))
+        self.modButton = ctk.CTkButton(self.mainFrame, text="mod", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert(" % "))
         self.modButton.grid(column=4, row=2, pady=5)
 
-        self.factorialButton = ctk.CTkButton(self.mainFrame, text="n!", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("!"))
+        self.factorialButton = ctk.CTkButton(self.mainFrame, text="n!", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.factorial(int(self.opBox.get())))
         self.factorialButton.grid(column=3, row=3, pady=5)
 
         self.closeParenButton = ctk.CTkButton(self.mainFrame, text=")", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox(")"))
