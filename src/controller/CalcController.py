@@ -32,7 +32,16 @@ class calcController:
         if self.isFullExpression(expression):
             evaluation = str(eval(expression))
             self.ui.displayToOpBox(evaluation)
-        
+
+    def sciEvaluate(self, mem, op):
+        self.evaluate(mem + op)
+        currentMem = self.ui.memEntry.get()
+
+        self.ui.memEntry.configure(state="normal")
+        self.ui.memEntry.insert(len(currentMem), op)
+        self.ui.memEntry.configure(state="disabled")
+
+
     def sciCalcInsert(self, op):
         currentOperand = self.ui.opBox.get()
         currentMem = self.ui.memEntry.get()

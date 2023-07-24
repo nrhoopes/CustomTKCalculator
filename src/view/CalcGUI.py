@@ -75,10 +75,11 @@ class CalcGUI:
             self.opBox.configure(state="normal")
             self.opBox.delete(0, len(self.opBox.get()))
             self.opBox.configure(state="disabled")
-
-            self.memEntry.configure(state="normal")
-            self.memEntry.delete(0, tk.END)
-            self.memEntry.configure(state="disabled")
+            
+            if self.controller.calcMode == "sci":
+                self.memEntry.configure(state="normal")
+                self.memEntry.delete(0, tk.END)
+                self.memEntry.configure(state="disabled")
         self.clearButton.configure(text="CE")
 
     # Public method removeLast
@@ -114,10 +115,17 @@ class CalcGUI:
         elif event.keysym == "BackSpace":
             self.removeLast()
         elif event.keysym == "Return" or event.keysym == "KP_Enter":
-            if self.controller.calcMode == "basic":
-                self.controller.evaluate(self.opBox.get())
-            elif self.controller.calcMode == "sci":
-                self.controller.evaluate(self.memEntry.get())
+            self.controller.evaluate(self.opBox.get())
+
+    def __sciShortcut(self, event):
+        if event.char.isnumeric():
+            self.insertToOpBox(event.char)
+        elif event.char in  ["/", "*", "-", "+", "."]:
+            self.controller.sciCalcInsert(event.char)
+        elif event.keysym == "BackSpace":
+            self.removeLast()
+        elif event.keysym == "Return" or event.keysym == "KP_Enter":
+            self.controller.sciEvaluate(self.memEntry.get(), self.opBox.get())
 
     # Public method basicCalc
     #
@@ -224,7 +232,7 @@ class CalcGUI:
 
         self.screenFrame.grid(column=0, row=0, columnspan=5)
 
-        self.root.bind("<KeyPress>", self.__shortcut) # REMOVE
+        self.root.bind("<KeyPress>", self.__sciShortcut)
 
         # Creation of the operation buttons along the top and side of keypad
         self.clearButton = ctk.CTkButton(self.mainFrame, text="CE", width=self.buttonWidth, font=(self.font, self.fontSize), command=self.clearScreen)
@@ -266,7 +274,7 @@ class CalcGUI:
         self.addButton = ctk.CTkButton(self.mainFrame, text="+", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert("+"))
         self.addButton.grid(column=4, row=6, pady=5, sticky="ns")
 
-        self.equalButton = ctk.CTkButton(self.mainFrame, text="=", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.evaluate(self.memEntry.get()))
+        self.equalButton = ctk.CTkButton(self.mainFrame, text="=", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciEvaluate(self.memEntry.get(), self.opBox.get()))
         self.equalButton.grid(column=4, row=7, pady=5, sticky="ns")
 
         # Creation of the number buttons on the keypad 0-9
