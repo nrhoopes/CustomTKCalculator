@@ -119,6 +119,13 @@ class CalcGUI:
         elif event.keysym == "Return" or event.keysym == "KP_Enter":
             self.controller.evaluate(self.opBox.get())
 
+    # Private method __sciShortcut
+    # Arguments:
+    #   - even: A <KeyPress> event
+    #
+    # __sciShortcut is just like __shortcut, except tweaked for the scientific calculator.
+    # The difference invovles using a different function from the controller for inserting,
+    # and evaluating.
     def __sciShortcut(self, event):
         if event.char.isnumeric():
             self.insertToOpBox(event.char)

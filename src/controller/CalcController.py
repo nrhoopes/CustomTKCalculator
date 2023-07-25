@@ -44,6 +44,8 @@ class calcController:
     # the information will not be in the same box in the scientific calculator.
     # Still utilizes evaluate().  Will also keep the memEntry up to date
     def sciEvaluate(self, mem, op):
+        # If we are doing a logarithm we need to parse out the format and find the
+        # numbers that the user wants to use to calculate.
         if "log[" in mem:
             currentMem = self.ui.memEntry.get()
             numIndex = mem.index("[") + 1
@@ -135,24 +137,45 @@ class calcController:
             self.ui.insertToOpBox(str(int(num) * -1))
             self.answerInBox = False
 
+    # Public method absolute
+    # Arguments:
+    #   - num: the number to find the absolute value for
+    #
+    # Will change the opBox's number to be the absolute value of that number
     def absolute(self, num):
         if num != "":
             self.ui.clearScreen()
             self.ui.insertToOpBox(str(abs(int(num))))
             self.answerInBox = False
 
+    # Public method squirt
+    # Arguments:
+    #   - num: the number to find the sqrt for.
+    #
+    # "sqrt sounds like squirt".  Finds the sqrt of the given number and 
+    # puts it into the opBox.
     def squirt(self, num):
         if num != "":
             self.ui.clearScreen()
             self.ui.insertToOpBox(str(math.sqrt(int(num))))
             self.answerInBox = False
 
+    # Public method squir
+    # Arguments:
+    #   - num: The number to square
+    #
+    # Finds the square of the number given and puts it into the opBox.
     def squir(self, num):
         if num != "":
             self.ui.clearScreen()
             self.ui.insertToOpBox(str(int(num) ** 2))
             self.answerInBox = False
 
+    # Public method tenx
+    # Arguments:
+    #   - num: The number to put 10 to the power of.
+    #
+    # will find 10^num and return it to the opBox.
     def tenx(self, num):
         if num != "":
             self.ui.clearScreen()
@@ -165,6 +188,12 @@ class calcController:
 
             self.answerInBox = False
 
+    # Public method log
+    # Arguments:
+    #   - num: The number to format for evaluation later.
+    # 
+    # Will place "log[num base " into the memEntry, formatted and waiting for a base.
+    # Logarithm is calculated in the sciEvaluate function.
     def log(self, num):
         if num != "":
             self.ui.clearScreen()
