@@ -219,7 +219,7 @@ class CalcGUI:
     # Populates the main window with widgets for the scientific calculator
     def sciCalc(self):
         self.__clearFrame(self.mainFrame)
-        self.root.geometry("550x620")
+        self.root.geometry("550x505")
 
         self.controller.calcMode = "sci"
 
@@ -246,7 +246,7 @@ class CalcGUI:
         self.piButton = ctk.CTkButton(self.mainFrame, text="pi", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("3.14"))
         self.piButton.grid(column=2, row=2, pady=5)
 
-        self.absButton = ctk.CTkButton(self.mainFrame, text="|x|", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("abs()"))
+        self.absButton = ctk.CTkButton(self.mainFrame, text="|x|", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.absolute(self.opBox.get()))
         self.absButton.grid(column=1, row=2, pady=5)
         
         self.modButton = ctk.CTkButton(self.mainFrame, text="mod", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert(" % "))
@@ -316,19 +316,19 @@ class CalcGUI:
         self.secondButton = ctk.CTkButton(self.mainFrame, fg_color="white", text_color="blue", text="2nd", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("2nd!"))
         self.secondButton.grid(column=0, row=2, pady=5)
 
-        self.sqrButton = ctk.CTkButton(self.mainFrame, text="x^2", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("sqr"))
+        self.sqrButton = ctk.CTkButton(self.mainFrame, text="x^2", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.squir(self.opBox.get()))
         self.sqrButton.grid(column=0, row=3, pady=5)
 
-        self.sqrtButton = ctk.CTkButton(self.mainFrame, text="sqrt", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("sqrt"))
+        self.sqrtButton = ctk.CTkButton(self.mainFrame, text="sqrt", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.squirt(self.opBox.get()))
         self.sqrtButton.grid(column=0, row=4, pady=5)
 
-        self.xpowyButton = ctk.CTkButton(self.mainFrame, text="x^y", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("x^y"))
+        self.xpowyButton = ctk.CTkButton(self.mainFrame, text="x^y", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert("**"))
         self.xpowyButton.grid(column=0, row=5, pady=5)
 
-        self.tenxButton = ctk.CTkButton(self.mainFrame, text="10^x", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("10x"))
+        self.tenxButton = ctk.CTkButton(self.mainFrame, text="10^x", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.tenx(self.opBox.get()))
         self.tenxButton.grid(column=0, row=6, pady=5)
 
-        self.logButton = ctk.CTkButton(self.mainFrame, text="log", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("log"))
+        self.logButton = ctk.CTkButton(self.mainFrame, text="log", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.log(self.opBox.get()))
         self.logButton.grid(column=0, row=7, pady=5)
 
         # Creation of the decimal button

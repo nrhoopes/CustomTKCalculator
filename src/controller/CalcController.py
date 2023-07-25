@@ -1,3 +1,4 @@
+import math
 
 class calcController:
     def __init__(self, ui):
@@ -43,14 +44,42 @@ class calcController:
     # the information will not be in the same box in the scientific calculator.
     # Still utilizes evaluate().  Will also keep the memEntry up to date
     def sciEvaluate(self, mem, op):
-        self.evaluate(mem + op)
-        currentMem = self.ui.memEntry.get()
+        if "log[" in mem:
+            currentMem = self.ui.memEntry.get()
+            numIndex = mem.index("[") + 1
+            num = ""
+            newOp = ""
+            for i in range(numIndex, len(mem), 1):
+                if mem[i] == "(":
+                    continue
+                elif mem[i].isnumeric():
+                    num += mem[i]
+                elif mem[i] == ")":
+                    break
+                else:
+                    break
+            for i in range(0, len(op), 1):
+                if op[i].isnumeric() or op[i] == ".":
+                    newOp += op[i]
+            
+            self.ui.memEntry.configure(state="normal")
+            self.ui.memEntry.insert(len(currentMem), op + "]")
+            self.ui.memEntry.configure(state="disabled")
 
-        self.ui.memEntry.configure(state="normal")
-        self.ui.memEntry.insert(len(currentMem), op)
-        self.ui.memEntry.configure(state="disabled")
+            self.ui.clearScreen()
+            self.ui.insertToOpBox(str(math.log(int(num), int(newOp))))
 
-        self.answerInBox = True
+            self.answerInBox = True
+        else:
+            self.evaluate(mem + op)
+            if self.isFullExpression(mem + op):
+                currentMem = self.ui.memEntry.get()
+
+                self.ui.memEntry.configure(state="normal")
+                self.ui.memEntry.insert(len(currentMem), op)
+                self.ui.memEntry.configure(state="disabled")
+
+                self.answerInBox = True
 
     # Public method sciCalcInsert
     # Arguments:
@@ -106,6 +135,44 @@ class calcController:
             self.ui.insertToOpBox(str(int(num) * -1))
             self.answerInBox = False
 
+    def absolute(self, num):
+        if num != "":
+            self.ui.clearScreen()
+            self.ui.insertToOpBox(str(abs(int(num))))
+            self.answerInBox = False
+
+    def squirt(self, num):
+        if num != "":
+            self.ui.clearScreen()
+            self.ui.insertToOpBox(str(math.sqrt(int(num))))
+            self.answerInBox = False
+
+    def squir(self, num):
+        if num != "":
+            self.ui.clearScreen()
+            self.ui.insertToOpBox(str(int(num) ** 2))
+            self.answerInBox = False
+
+    def tenx(self, num):
+        if num != "":
+            self.ui.clearScreen()
+            self.ui.insertToOpBox(str(10 ** int(num)))
+            self.ui.memEntry.configure(state="normal")
+            if self.answerInBox:
+                self.ui.memEntry.delete(0, len(self.ui.memEntry.get()))
+            self.ui.memEntry.insert(0, f"10^{num}")
+            self.ui.memEntry.configure(state="disabled")
+
+            self.answerInBox = False
+
+    def log(self, num):
+        if num != "":
+            self.ui.clearScreen()
+            self.ui.memEntry.configure(state="normal")
+            self.ui.memEntry.delete(0, len(self.ui.memEntry.get()))
+            self.ui.memEntry.insert(0, f"log[{num} base ")
+            self.ui.memEntry.configure(state="disabled")
+
     # Public method isFullExpression
     # Arguments:
     #   - expression: An expression string to see if a full expression is present.
@@ -127,6 +194,9 @@ class calcController:
                 if (lastChar in operators or lastChar == "") and i == "-":
                     lastChar = "pass"
                     continue
+                elif lastChar == "*" and i == "*":
+                    lastChar = "pass"
+                    continue
                 operatorCount += 1
                 if currentOperand:
                     operandCount += 1
@@ -142,7 +212,10 @@ class calcController:
             operandCount += 1
 
         if (operatorCount + 1) == operandCount:
-            return True
+            if operandCount == 1 and operatorCount == 0:
+                return False
+            else:
+                return True
         else:
             return False
 
