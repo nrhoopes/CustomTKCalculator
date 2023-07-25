@@ -310,7 +310,7 @@ class CalcGUI:
         self.zeroButton = ctk.CTkButton(self.mainFrame, text="0", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("0"))
         self.zeroButton.grid(column=2, row=7, pady=5)
 
-        self.flipButton = ctk.CTkButton(self.mainFrame, text="+/-", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("Flip sign"))
+        self.flipButton = ctk.CTkButton(self.mainFrame, text="+/-", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.flipSign(self.opBox.get()))
         self.flipButton.grid(column=1, row=7, pady=5)
 
         self.secondButton = ctk.CTkButton(self.mainFrame, fg_color="white", text_color="blue", text="2nd", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("2nd!"))

@@ -94,7 +94,17 @@ class calcController:
             ans = ans * i
         self.ui.clearScreen()
         self.ui.insertToOpBox(ans)
-            
+    
+    # Public method flipSign
+    # Arguments:
+    #   - num: the number of the sign to flip (string)
+    #
+    # Will flip the sign of the given num, clear the screen, and place the new value into opBox
+    def flipSign(self, num):
+        if num != "":
+            self.ui.clearScreen()
+            self.ui.insertToOpBox(str(int(num) * -1))
+            self.answerInBox = False
 
     # Public method isFullExpression
     # Arguments:
@@ -107,16 +117,21 @@ class calcController:
         operatorCount = 0
         operandCount = 0
         currentOperand = False
+        lastChar = ""
         
         # List of possible operators the calculator supports
         operators = ["+", "-", "/", "*"]
 
         for i in expression:
             if i in operators:
+                if (lastChar in operators or lastChar == "") and i == "-":
+                    lastChar = "pass"
+                    continue
                 operatorCount += 1
                 if currentOperand:
                     operandCount += 1
                     currentOperand = False
+                lastChar = i
                 pass
             elif i.isnumeric() or i == ".":
                 currentOperand = True
