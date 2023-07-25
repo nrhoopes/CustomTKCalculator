@@ -26,14 +26,14 @@ class CalcGUI:
 
         # Creation of the mainFrame that all widgets will be placed in
         self.mainFrame = ctk.CTkFrame(self.root)
-        # self.basicCalc() # Calculator will always start in basic mode
-        self.sciCalc() # REMOVE
         self.mainFrame.pack()
 
     # Public method launch
     # 
     # Used to launch the actual GUI after setup is completed.
     def launch(self):
+        # self.basicCalc() # Calculator will always start in basic mode
+        self.sciCalc() # REMOVE
         self.root.mainloop() # launch program
 
     # Public method setController
@@ -71,6 +71,17 @@ class CalcGUI:
         self.opBox.configure(state="normal")
         self.opBox.delete(0, len(self.opBox.get()))
         self.opBox.configure(state="disabled")
+        if self.clearButton.cget('text') == "CE":
+            self.opBox.configure(state="normal")
+            self.opBox.delete(0, len(self.opBox.get()))
+            self.opBox.configure(state="disabled")
+            
+            if self.controller.calcMode == "sci":
+                self.memEntry.configure(state="normal")
+                self.memEntry.delete(0, tk.END)
+                self.memEntry.configure(state="disabled")
+        self.clearButton.configure(text="CE")
+        self.controller.answerInBox = False
 
     # Public method removeLast
     #
@@ -80,6 +91,7 @@ class CalcGUI:
         self.opBox.configure(state="normal")
         self.opBox.delete(len(self.opBox.get()) - 1, len(self.opBox.get()))
         self.opBox.configure(state="disabled")
+        self.controller.answerInBox = False
 
     # Private method __clearFrame
     # Arguments:
@@ -107,6 +119,23 @@ class CalcGUI:
         elif event.keysym == "Return" or event.keysym == "KP_Enter":
             self.controller.evaluate(self.opBox.get())
 
+    # Private method __sciShortcut
+    # Arguments:
+    #   - even: A <KeyPress> event
+    #
+    # __sciShortcut is just like __shortcut, except tweaked for the scientific calculator.
+    # The difference invovles using a different function from the controller for inserting,
+    # and evaluating.
+    def __sciShortcut(self, event):
+        if event.char.isnumeric():
+            self.insertToOpBox(event.char)
+        elif event.char in  ["/", "*", "-", "+", "."]:
+            self.controller.sciCalcInsert(event.char)
+        elif event.keysym == "BackSpace":
+            self.removeLast()
+        elif event.keysym == "Return" or event.keysym == "KP_Enter":
+            self.controller.sciEvaluate(self.memEntry.get(), self.opBox.get())
+
     # Public method basicCalc
     #
     # Populates the main window with widget for a basic calculator
@@ -122,6 +151,7 @@ class CalcGUI:
     # 5 |    0  .  = |
     #   --------------
     def basicCalc(self):
+        self.controller.calcMode = "basic"
         self.root.geometry("450x400")
         self.__clearFrame(self.mainFrame)
 
@@ -191,15 +221,27 @@ class CalcGUI:
         self.decimalButton = ctk.CTkButton(self.mainFrame, text=".", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("."))
         self.decimalButton.grid(column=2, row=5, pady=5)
 
+    # Public method sciCalc
+    #
+    # Populates the main window with widgets for the scientific calculator
     def sciCalc(self):
         self.__clearFrame(self.mainFrame)
-        self.root.geometry("550x620")
+        self.root.geometry("550x505")
+
+        self.controller.calcMode = "sci"
+
+        self.screenFrame = ctk.CTkFrame(self.mainFrame)
+
+        self.memEntry = ctk.CTkEntry(self.screenFrame, state="disabled", justify='right')
+        self.memEntry.grid(column=2, row=0, columnspan=3, sticky="esw")
 
         # Creation of the operation box at the top of the window.
-        self.opBox = ctk.CTkEntry(self.mainFrame, height=75, width=500, justify="right", font=(self.font, self.fontSize), state="disabled")
-        self.opBox.grid(column=0, row=0, columnspan=5, pady=5)
+        self.opBox = ctk.CTkEntry(self.screenFrame, height=75, width=500, justify="right", font=(self.font, self.fontSize), state="disabled")
+        self.opBox.grid(column=0, row=1, columnspan=5)
 
-        self.root.bind("<KeyPress>", self.__shortcut) # REMOVE
+        self.screenFrame.grid(column=0, row=0, columnspan=5)
+
+        self.root.bind("<KeyPress>", self.__sciShortcut)
 
         # Creation of the operation buttons along the top and side of keypad
         self.clearButton = ctk.CTkButton(self.mainFrame, text="CE", width=self.buttonWidth, font=(self.font, self.fontSize), command=self.clearScreen)
@@ -211,13 +253,13 @@ class CalcGUI:
         self.piButton = ctk.CTkButton(self.mainFrame, text="pi", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("3.14"))
         self.piButton.grid(column=2, row=2, pady=5)
 
-        self.absButton = ctk.CTkButton(self.mainFrame, text="|x|", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("abs()"))
+        self.absButton = ctk.CTkButton(self.mainFrame, text="|x|", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.absolute(self.opBox.get()))
         self.absButton.grid(column=1, row=2, pady=5)
         
-        self.modButton = ctk.CTkButton(self.mainFrame, text="mod", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox(" % "))
+        self.modButton = ctk.CTkButton(self.mainFrame, text="mod", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert(" % "))
         self.modButton.grid(column=4, row=2, pady=5)
 
-        self.factorialButton = ctk.CTkButton(self.mainFrame, text="n!", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("!"))
+        self.factorialButton = ctk.CTkButton(self.mainFrame, text="n!", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.factorial(int(self.opBox.get())))
         self.factorialButton.grid(column=3, row=3, pady=5)
 
         self.closeParenButton = ctk.CTkButton(self.mainFrame, text=")", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox(")"))
@@ -229,19 +271,19 @@ class CalcGUI:
         self.backButton = ctk.CTkButton(self.mainFrame, text="<-", width=self.buttonWidth, font=(self.font, self.fontSize), command=self.removeLast)
         self.backButton.grid(column=4, row=1, pady=5)
 
-        self.divideButton = ctk.CTkButton(self.mainFrame, text="/", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("/"))
+        self.divideButton = ctk.CTkButton(self.mainFrame, text="/", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert("/"))
         self.divideButton.grid(column=4, row=3, pady=5)
 
-        self.multButton = ctk.CTkButton(self.mainFrame, text="*", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("*"))
+        self.multButton = ctk.CTkButton(self.mainFrame, text="*", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert("*"))
         self.multButton.grid(column=4, row=4, pady=5)
 
-        self.subButton = ctk.CTkButton(self.mainFrame, text="-", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("-"))
+        self.subButton = ctk.CTkButton(self.mainFrame, text="-", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert("-"))
         self.subButton.grid(column=4, row=5, pady=5)
 
-        self.addButton = ctk.CTkButton(self.mainFrame, text="+", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("+"))
+        self.addButton = ctk.CTkButton(self.mainFrame, text="+", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert("+"))
         self.addButton.grid(column=4, row=6, pady=5, sticky="ns")
 
-        self.equalButton = ctk.CTkButton(self.mainFrame, text="=", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.evaluate(self.opBox.get()))
+        self.equalButton = ctk.CTkButton(self.mainFrame, text="=", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciEvaluate(self.memEntry.get(), self.opBox.get()))
         self.equalButton.grid(column=4, row=7, pady=5, sticky="ns")
 
         # Creation of the number buttons on the keypad 0-9
@@ -275,25 +317,25 @@ class CalcGUI:
         self.zeroButton = ctk.CTkButton(self.mainFrame, text="0", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.insertToOpBox("0"))
         self.zeroButton.grid(column=2, row=7, pady=5)
 
-        self.flipButton = ctk.CTkButton(self.mainFrame, text="+/-", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("Flip sign"))
+        self.flipButton = ctk.CTkButton(self.mainFrame, text="+/-", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.flipSign(self.opBox.get()))
         self.flipButton.grid(column=1, row=7, pady=5)
 
         self.secondButton = ctk.CTkButton(self.mainFrame, fg_color="white", text_color="blue", text="2nd", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("2nd!"))
         self.secondButton.grid(column=0, row=2, pady=5)
 
-        self.sqrButton = ctk.CTkButton(self.mainFrame, text="x^2", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("sqr"))
+        self.sqrButton = ctk.CTkButton(self.mainFrame, text="x^2", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.squir(self.opBox.get()))
         self.sqrButton.grid(column=0, row=3, pady=5)
 
-        self.sqrtButton = ctk.CTkButton(self.mainFrame, text="sqrt", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("sqrt"))
+        self.sqrtButton = ctk.CTkButton(self.mainFrame, text="sqrt", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.squirt(self.opBox.get()))
         self.sqrtButton.grid(column=0, row=4, pady=5)
 
-        self.xpowyButton = ctk.CTkButton(self.mainFrame, text="x^y", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("x^y"))
+        self.xpowyButton = ctk.CTkButton(self.mainFrame, text="x^y", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.sciCalcInsert("**"))
         self.xpowyButton.grid(column=0, row=5, pady=5)
 
-        self.tenxButton = ctk.CTkButton(self.mainFrame, text="10^x", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("10x"))
+        self.tenxButton = ctk.CTkButton(self.mainFrame, text="10^x", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.tenx(self.opBox.get()))
         self.tenxButton.grid(column=0, row=6, pady=5)
 
-        self.logButton = ctk.CTkButton(self.mainFrame, text="log", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("log"))
+        self.logButton = ctk.CTkButton(self.mainFrame, text="log", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.log(self.opBox.get()))
         self.logButton.grid(column=0, row=7, pady=5)
 
         # Creation of the decimal button
