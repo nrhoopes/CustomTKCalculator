@@ -69,7 +69,7 @@ class calcController:
             self.ui.memEntry.configure(state="disabled")
 
             self.ui.clearScreen()
-            self.ui.insertToOpBox(str(math.log(int(num), int(newOp))))
+            self.ui.insertToOpBox(str(math.log(float(num), float(newOp))))
 
             self.answerInBox = True
         else:
@@ -134,7 +134,7 @@ class calcController:
     def flipSign(self, num):
         if num != "":
             self.ui.clearScreen()
-            self.ui.insertToOpBox(str(int(num) * -1))
+            self.ui.insertToOpBox(str(float(num) * -1))
             self.answerInBox = False
 
     # Public method absolute
@@ -145,7 +145,7 @@ class calcController:
     def absolute(self, num):
         if num != "":
             self.ui.clearScreen()
-            self.ui.insertToOpBox(str(abs(int(num))))
+            self.ui.insertToOpBox(str(abs(float(num))))
             self.answerInBox = False
 
     # Public method squirt
@@ -157,7 +157,7 @@ class calcController:
     def squirt(self, num):
         if num != "":
             self.ui.clearScreen()
-            self.ui.insertToOpBox(str(math.sqrt(int(num))))
+            self.ui.insertToOpBox(str(math.sqrt(float(num))))
             self.answerInBox = False
 
     # Public method squir
@@ -168,7 +168,19 @@ class calcController:
     def squir(self, num):
         if num != "":
             self.ui.clearScreen()
-            self.ui.insertToOpBox(str(int(num) ** 2))
+            self.ui.insertToOpBox(str(float(num) ** 2))
+            self.answerInBox = False
+
+    def cubert(self, num):
+        if num != "":
+            self.ui.clearScreen()
+            self.ui.insertToOpBox(str(math.cbrt(float(num))))
+            self.answerInBox = False
+
+    def cube(self, num):
+        if num != "":
+            self.ui.clearScreen()
+            self.ui.insertToOpBox(str(float(num) ** 3))
             self.answerInBox = False
 
     # Public method tenx
@@ -179,11 +191,23 @@ class calcController:
     def tenx(self, num):
         if num != "":
             self.ui.clearScreen()
-            self.ui.insertToOpBox(str(10 ** int(num)))
+            self.ui.insertToOpBox(str(10 ** float(num)))
             self.ui.memEntry.configure(state="normal")
             if self.answerInBox:
                 self.ui.memEntry.delete(0, len(self.ui.memEntry.get()))
             self.ui.memEntry.insert(0, f"10^{num}")
+            self.ui.memEntry.configure(state="disabled")
+
+            self.answerInBox = False
+
+    def twox(self, num):
+        if num != "":
+            self.ui.clearScreen()
+            self.ui.insertToOpBox(str(2 ** float(num)))
+            self.ui.memEntry.configure(state="normal")
+            if self.answerInBox:
+                self.ui.memEntry.delete(0, len(self.ui.memEntry.get()))
+            self.ui.memEntry.insert(0, f"2^{num}")
             self.ui.memEntry.configure(state="disabled")
 
             self.answerInBox = False
@@ -201,6 +225,12 @@ class calcController:
             self.ui.memEntry.delete(0, len(self.ui.memEntry.get()))
             self.ui.memEntry.insert(0, f"log[{num} base ")
             self.ui.memEntry.configure(state="disabled")
+
+    def ln(self, num):
+        if num != "":
+            self.ui.clearScreen()
+            self.ui.insertToOpBox(str(math.log(float(num))))
+            self.answerInBox = False
 
     # Public method isFullExpression
     # Arguments:

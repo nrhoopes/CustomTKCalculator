@@ -13,6 +13,7 @@ class CalcGUI:
         self.buttonWidth = 75
         self.fontSize = 35
         self.font = "TkDefaultFont"
+        self.sciSecond = False
 
         # # # Menu Creation # # #
         self.menubar = tk.Menu(self.root)
@@ -92,6 +93,22 @@ class CalcGUI:
         self.opBox.delete(len(self.opBox.get()) - 1, len(self.opBox.get()))
         self.opBox.configure(state="disabled")
         self.controller.answerInBox = False
+
+    def sciSecondFlip(self, second):
+        if second:
+            self.secondButton.configure(fg_color="white", text_color=("#3B8ED0", "#1F6AA5"), command=lambda: self.sciSecondFlip(False))
+            self.sqrButton.configure(text="x^3", command=lambda: self.controller.cube(self.opBox.get()))
+            self.sqrtButton.configure(text="cbrt", command=lambda: self.controller.cubert(self.opBox.get()))
+            self.xpowyButton.configure(text="y√x") # √
+            self.tenxButton.configure(text="2 ^ x", command=lambda: self.controller.twox(self.opBox.get()))
+            self.logButton.configure(text="ln", command=lambda: self.controller.ln(self.opBox.get()))
+        elif not second:
+            self.secondButton.configure(fg_color=("#3B8ED0", "#1F6AA5"), text_color=("#DCE4EE", "#DCE4EE"), command=lambda: self.sciSecondFlip(True))
+            self.sqrButton.configure(text="x^2", command=lambda: self.controller.squir(self.opBox.get()))
+            self.sqrtButton.configure(text="sqrt", command=lambda: self.controller.squirt(self.opBox.get()))
+            self.xpowyButton.configure(text="x^y", command=lambda: self.controller.sciCalcInsert("**"))
+            self.tenxButton.configure(text="10^x", command=lambda: self.controller.tenx(self.opBox.get()))
+            self.logButton.configure(text="log", command=lambda: self.controller.log(self.opBox.get()))
 
     # Private method __clearFrame
     # Arguments:
@@ -320,7 +337,7 @@ class CalcGUI:
         self.flipButton = ctk.CTkButton(self.mainFrame, text="+/-", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.flipSign(self.opBox.get()))
         self.flipButton.grid(column=1, row=7, pady=5)
 
-        self.secondButton = ctk.CTkButton(self.mainFrame, fg_color="white", text_color="blue", text="2nd", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: print("2nd!"))
+        self.secondButton = ctk.CTkButton(self.mainFrame, text="2nd", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.sciSecondFlip(True))
         self.secondButton.grid(column=0, row=2, pady=5)
 
         self.sqrButton = ctk.CTkButton(self.mainFrame, text="x^2", width=self.buttonWidth, font=(self.font, self.fontSize), command=lambda: self.controller.squir(self.opBox.get()))
