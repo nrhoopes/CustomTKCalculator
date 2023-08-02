@@ -97,11 +97,11 @@ class CalcGUI:
     def sciSecondFlip(self, second):
         if second:
             self.secondButton.configure(fg_color="white", text_color=("#3B8ED0", "#1F6AA5"), command=lambda: self.sciSecondFlip(False))
-            self.sqrButton.configure(text="x^3")
-            self.sqrtButton.configure(text="cbrt")
-            self.xpowyButton.configure(text="y√x")
-            self.tenxButton.configure(text="2 ^ x")
-            self.logButton.configure(text="ln")
+            self.sqrButton.configure(text="x^3", command=lambda: self.controller.cube(self.opBox.get()))
+            self.sqrtButton.configure(text="cbrt", command=lambda: self.controller.cubert(self.opBox.get()))
+            self.xpowyButton.configure(text="y√x") # √
+            self.tenxButton.configure(text="2 ^ x", command=lambda: self.controller.twox(self.opBox.get()))
+            self.logButton.configure(text="ln", command=lambda: self.controller.ln(self.opBox.get()))
         elif not second:
             self.secondButton.configure(fg_color=("#3B8ED0", "#1F6AA5"), text_color=("#DCE4EE", "#DCE4EE"), command=lambda: self.sciSecondFlip(True))
             self.sqrButton.configure(text="x^2", command=lambda: self.controller.squir(self.opBox.get()))
